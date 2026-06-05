@@ -1,0 +1,55 @@
+.mbss-admin .mbss-scaffold-notice {
+	padding: 12px 16px;
+	background: #f0f6f5;
+	border-left: 4px solid #5a9a8a;
+}
+
+.mbss-dashboard-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 16px;
+	margin-top: 20px;
+}
+
+.mbss-dashboard-card {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 16px 20px;
+}
+
+.mbss-booking-flow__steps {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	list-style: none;
+	padding: 0;
+	margin: 0 0 24px;
+}
+
+.mbss-booking-flow__step {
+	padding: 8px 12px;
+	background: #f0f0f1;
+	border-radius: 6px;
+	font-size: 13px;
+}
+
+.mbss-booking-flow__step.is-active {
+	background: #5a9a8a;
+	color: #fff;
+}
+
+.mbss-booking-flow__paths {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 12px;
+}
+
+.mbss-path-card {
+	padding: 20px;
+	border: 2px solid #1a2f4a;
+	border-radius: 8px;
+	background: #fff;
+	cursor: pointer;
+	font-weight: 600;
+}

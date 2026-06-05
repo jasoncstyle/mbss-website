@@ -1,0 +1,125 @@
+{
+  "$schema": "https://schemas.wp.org/wp/6.7/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "layout": {
+      "contentSize": "720px",
+      "wideSize": "1200px"
+    },
+    "color": {
+      "palette": [
+        {
+          "slug": "ocean-navy",
+          "color": "#1a2f4a",
+          "name": "Deep Ocean Navy"
+        },
+        {
+          "slug": "warm-sand",
+          "color": "#e8dcc8",
+          "name": "Warm Sand"
+        },
+        {
+          "slug": "sea-glass",
+          "color": "#5a9a8a",
+          "name": "Sea Glass Green"
+        },
+        {
+          "slug": "off-white",
+          "color": "#f8f7f4",
+          "name": "Off White"
+        },
+        {
+          "slug": "white",
+          "color": "#ffffff",
+          "name": "White"
+        },
+        {
+          "slug": "charcoal",
+          "color": "#2d2d2d",
+          "name": "Charcoal"
+        }
+      ]
+    },
+    "typography": {
+      "fontFamilies": [
+        {
+          "fontFamily": "\"Plus Jakarta Sans\", system-ui, sans-serif",
+          "slug": "heading",
+          "name": "Heading"
+        },
+        {
+          "fontFamily": "Inter, system-ui, sans-serif",
+          "slug": "body",
+          "name": "Body"
+        }
+      ],
+      "fontSizes": [
+        { "slug": "small", "size": "0.875rem", "name": "Small" },
+        { "slug": "medium", "size": "1rem", "name": "Medium" },
+        { "slug": "large", "size": "1.25rem", "name": "Large" },
+        { "slug": "x-large", "size": "1.75rem", "name": "Extra Large" },
+        { "slug": "xx-large", "size": "2.5rem", "name": "2X Large" },
+        { "slug": "hero", "size": "3rem", "name": "Hero" }
+      ]
+    },
+    "spacing": {
+      "spacingSizes": [
+        { "slug": "20", "size": "1.25rem", "name": "20" },
+        { "slug": "30", "size": "1.875rem", "name": "30" },
+        { "slug": "40", "size": "2.5rem", "name": "40" },
+        { "slug": "50", "size": "3.75rem", "name": "50" },
+        { "slug": "60", "size": "5rem", "name": "60" }
+      ]
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "var(--wp--preset--color--off-white)",
+      "text": "var(--wp--preset--color--charcoal)"
+    },
+    "typography": {
+      "fontFamily": "var(--wp--preset--font-family--body)",
+      "fontSize": "var(--wp--preset--font-size--medium)",
+      "lineHeight": "1.6"
+    },
+    "elements": {
+      "heading": {
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--heading)",
+          "fontWeight": "600",
+          "lineHeight": "1.2"
+        },
+        "color": {
+          "text": "var(--wp--preset--color--ocean-navy)"
+        }
+      },
+      "button": {
+        "color": {
+          "background": "var(--wp--preset--color--sea-glass)",
+          "text": "var(--wp--preset--color--white)"
+        },
+        "border": {
+          "radius": "6px"
+        },
+        "typography": {
+          "fontWeight": "600"
+        }
+      },
+      "link": {
+        "color": {
+          "text": "var(--wp--preset--color--sea-glass)"
+        }
+      }
+    }
+  },
+  "templateParts": [
+    { "name": "header", "title": "Header", "area": "header" },
+    { "name": "footer", "title": "Footer", "area": "footer" }
+  ],
+  "customTemplates": [
+    { "name": "course", "title": "Course Page", "postTypes": ["page"] },
+    { "name": "liveaboard-package", "title": "Liveaboard Package", "postTypes": ["page"] },
+    { "name": "booking", "title": "Book Now", "postTypes": ["page"] }
+  ]
+}

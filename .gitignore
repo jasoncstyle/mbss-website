@@ -1,0 +1,11 @@
+.env
+vendor/
+node_modules/
+*.log
+
+# WordPress uploads / cache (if synced locally)
+wordpress/
+
+# OS
+.DS_Store
+Thumbs.db

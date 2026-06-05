@@ -1,0 +1,11 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "mbss/upcoming-courses",
+  "title": "Upcoming Courses",
+  "category": "mbss",
+  "description": "Card layout of upcoming course sessions from MBSS Operations.",
+  "textdomain": "mbss-theme",
+  "supports": { "html": false },
+  "render": "file:./render.php"
+}

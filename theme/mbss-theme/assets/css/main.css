@@ -1,0 +1,66 @@
+/**
+ * MBSS Theme — main styles (scaffold)
+ * Expand per docs/03-brand-design.md
+ */
+
+:root {
+	--mbss-radius: 8px;
+	--mbss-shadow: 0 4px 24px rgba(26, 47, 74, 0.08);
+}
+
+body {
+	background-color: var(--wp--preset--color--off-white, #f8f7f4);
+}
+
+.mbss-scaffold-notice {
+	padding: 1rem 1.25rem;
+	background: var(--wp--preset--color--warm-sand, #e8dcc8);
+	border-radius: var(--mbss-radius);
+	font-size: 0.9rem;
+}
+
+.mbss-hero {
+	min-height: 80vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.mbss-choose-path .wp-block-column {
+	background: #fff;
+	border-radius: var(--mbss-radius);
+	box-shadow: var(--mbss-shadow);
+	padding: 1.5rem;
+}
+
+.mbss-course-finder {
+	padding: 2.5rem;
+	background: #fff;
+	border-radius: var(--mbss-radius);
+	box-shadow: var(--mbss-shadow);
+	margin: 2rem 0;
+}
+
+.mbss-course-finder fieldset {
+	border: none;
+	margin-bottom: 1.25rem;
+	padding: 0;
+}
+
+.mbss-course-finder legend {
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+}
+
+.mbss-upcoming-courses__list {
+	list-style: none;
+	padding: 0;
+	display: grid;
+	gap: 1rem;
+}
+
+@media (min-width: 768px) {
+	.mbss-upcoming-courses__list {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}

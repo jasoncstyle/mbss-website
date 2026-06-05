@@ -1,0 +1,58 @@
+# Local WordPress development for MBSS
+# Requires Docker Desktop: https://www.docker.com/products/docker-desktop/
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-wordpress}
+      MYSQL_USER: ${MYSQL_USER:-wordpress}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+    volumes:
+      - mbss_db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+
+  wordpress:
+    image: wordpress:6.7-php8.2-apache
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
+      WORDPRESS_DEBUG: ${WORDPRESS_DEBUG:-1}
+    volumes:
+      - mbss_wp_data:/var/www/html
+      # Mount theme and plugin from this repo (live editing)
+      - ./theme/mbss-theme:/var/www/html/wp-content/themes/mbss-theme
+      - ./plugin/mbss-operations:/var/www/html/wp-content/plugins/mbss-operations
+
+  wpcli:
+    image: wordpress:cli-php8.2
+    depends_on:
+      - db
+      - wordpress
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
+    volumes:
+      - mbss_wp_data:/var/www/html
+      - ./theme/mbss-theme:/var/www/html/wp-content/themes/mbss-theme
+      - ./plugin/mbss-operations:/var/www/html/wp-content/plugins/mbss-operations
+    entrypoint: wp
+    command: "--info"
+    profiles:
+      - cli
+
+volumes:
+  mbss_db_data:
+  mbss_wp_data:

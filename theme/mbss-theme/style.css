@@ -1,0 +1,13 @@
+/*
+Theme Name: MBSS Theme
+Theme URI: https://myrtlebeachsailingschool.com
+Author: Myrtle Beach Sailing School
+Description: Custom theme for Myrtle Beach Sailing School. Visual design only — all business logic lives in the MBSS Operations plugin.
+Version: 0.1.0
+Requires at least: 6.4
+Tested up to: 6.7
+Requires PHP: 8.1
+Text Domain: mbss-theme
+*/
+
+/* Base styles are loaded via theme.json and assets/css/main.css */
