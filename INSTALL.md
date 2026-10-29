@@ -83,13 +83,27 @@ New-Item -ItemType SymbolicLink -Name "mbss-operations" -Target "c:\Users\jason\
 - Shortcode: `[mbss_booking_flow]` on `/book` page
 - REST API: `/wp-json/mbss/v1/sessions/upcoming`, `/wp-json/mbss/v1/course-finder`
 
+## Booking and Stripe
+
+Activate **MBSS Operations**. It creates the course catalog, `/book`, and `/my-booking`.
+
+The public flow follows Ocean Sailing Adventures: trip cards or a calendar, a reservation hold, then Stripe Checkout. Passages take a 10% deposit, with the next payment due 60 days before departure and the final balance due 20 days before departure. School courses keep their published fixed deposit, with the balance due 21 days before arrival.
+
+In **MBSS → Stripe Settings**:
+
+1. Paste the Stripe secret key (`sk_test_...` or `sk_live_...`).
+2. Add a webhook endpoint for `checkout.session.completed`:
+   `https://your-site.example/wp-json/mbss/v1/stripe/webhook`
+3. Paste the webhook signing secret (`whsec_...`).
+
+Until a secret key is saved, `/book` can simulate a deposit so the reservation, receipt, and balance page can be reviewed. No card data is stored on the site.
+
 ## Next Build Steps
 
 1. Populate homepage with all 12 sections per [docs/04-homepage.md](docs/04-homepage.md)
 2. Build ASA 101 course page per [docs/05-course-pages.md](docs/05-course-pages.md)
-3. Implement booking flow steps in `plugin/mbss-operations/modules/bookings/`
-4. Seed course catalog data (ASA 101, 103, 104, packages)
-5. Connect Stripe for deposits
+3. Add real trip dates under MBSS → Trips and Courses
+4. Connect the Stripe secret key and webhook before taking live deposits
 
 ## Troubleshooting
 
