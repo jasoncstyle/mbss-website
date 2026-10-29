@@ -1,0 +1,62 @@
+.mbss-stripe {
+	max-width: 640px;
+}
+
+.mbss-stripe__form,
+.mbss-stripe__receipt {
+	display: grid;
+	gap: 0.75rem;
+	margin: 1rem 0 2rem;
+}
+
+.mbss-stripe__form label {
+	display: grid;
+	gap: 0.3rem;
+	font-weight: 600;
+}
+
+.mbss-stripe__form input,
+.mbss-stripe__form select {
+	font: inherit;
+	font-weight: 400;
+	padding: 0.55rem 0.65rem;
+}
+
+.mbss-stripe__button {
+	justify-self: start;
+	background: #1a2f4a;
+	color: #fff;
+	border: 0;
+	border-radius: 999px;
+	padding: 0.75rem 1.2rem;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.mbss-stripe__summary,
+.mbss-stripe__receipt {
+	background: #f7f4ee;
+	border-radius: 12px;
+	padding: 0.9rem 1rem;
+}
+
+.mbss-stripe__notice {
+	background: #fde8e4;
+	border-radius: 8px;
+	padding: 0.75rem 1rem;
+}
+
+.mbss-stripe__fine {
+	color: #4d4d4d;
+	font-size: 0.92rem;
+}
+
+.mbss-stripe__hp {
+	position: absolute;
+	left: -9999px;
+}
+
+.mbss-stripe__balance {
+	border-top: 1px solid #e8dcc8;
+	padding-top: 1rem;
+}
