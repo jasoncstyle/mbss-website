@@ -22,6 +22,7 @@ final class Frontend {
 
 	public function register(): void {
 		add_shortcode( 'mbss_stripe', array( $this, 'render' ) );
+		add_shortcode( 'course_deposit', array( $this, 'render' ) );
 		add_action( 'admin_post_nopriv_mbss_stripe_start', array( $this, 'start' ) );
 		add_action( 'admin_post_mbss_stripe_start', array( $this, 'start' ) );
 		add_action( 'admin_post_nopriv_mbss_stripe_balance', array( $this, 'balance' ) );
@@ -98,11 +99,11 @@ final class Frontend {
 		echo '<label>Course<select name="course" id="mbss-stripe-course" required>';
 		echo '<option value="">Select a course</option>';
 		foreach ( $products as $product ) {
-			$online = 'online' === $product['kind'];
+			$full = 'full' === $product['kind'];
 			echo '<option value="' . esc_attr( (string) $product['slug'] ) . '"';
 			echo ' data-price="' . esc_attr( (string) $product['price_cents'] ) . '"';
 			echo ' data-deposit="' . esc_attr( (string) $product['deposit_cents'] ) . '"';
-			echo ' data-online="' . ( $online ? '1' : '0' ) . '">';
+			echo ' data-full="' . ( $full ? '1' : '0' ) . '">';
 			echo esc_html( (string) $product['title'] . ' — ' . Quote::dollars( (int) $product['price_cents'] ) );
 			echo '</option>';
 		}
@@ -116,7 +117,7 @@ final class Frontend {
 		echo '<p id="mbss-stripe-later"></p>';
 		echo '</div>';
 		echo '<button type="submit" class="mbss-stripe__button">Continue to Stripe</button>';
-		echo '<p class="mbss-stripe__fine">The amount shown above is what Stripe charges. Card numbers stay on Stripe. A lesson balance is due ' . esc_html( (string) $days ) . ' days before the start date. ASA 118 docking uses a $50 deposit.</p>';
+		echo '<p class="mbss-stripe__fine">The amount shown above is what Stripe charges. Card numbers stay on Stripe. The balance is due ' . esc_html( (string) $days ) . ' days before the lesson.</p>';
 		echo '</form>';
 
 		echo '<form class="mbss-stripe__form mbss-stripe__balance" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
@@ -183,7 +184,11 @@ final class Frontend {
 
 	private function page_uses_shortcode(): bool {
 		$post = get_post();
-		return $post instanceof \WP_Post && has_shortcode( (string) $post->post_content, 'mbss_stripe' );
+		if ( ! $post instanceof \WP_Post ) {
+			return false;
+		}
+		$content = (string) $post->post_content;
+		return has_shortcode( $content, 'mbss_stripe' ) || has_shortcode( $content, 'course_deposit' );
 	}
 
 	private function notice_text(): string {

@@ -77,7 +77,13 @@ final class Installer {
 		);
 
 		add_option( 'mbss_stripe_balance_days', 14 );
+		add_option( 'mbss_stripe_deposit_lesson', 25000 );
+		add_option( 'mbss_stripe_deposit_package', 50000 );
+		add_option( 'mbss_stripe_deposit_docking', 5000 );
+		add_option( 'mbss_stripe_deposit_passage', 25000 );
+		add_option( 'mbss_stripe_ref_prefix', self::site_prefix() );
 		self::ensure_catalog();
+		self::retire_external_courses();
 		update_option( 'mbss_stripe_db_version', MBSS_STRIPE_VERSION );
 	}
 
@@ -115,8 +121,71 @@ final class Installer {
 	}
 
 	/**
-	 * Published Myrtle Beach prices. Deposits follow the current course pages.
+	 * Online education courses are paid in another system and are not sold here.
+	 */
+	public static function retire_external_courses(): void {
+		global $wpdb;
+
+		$products = $wpdb->prefix . 'mbss_stripe_products';
+		$orders   = $wpdb->prefix . 'mbss_stripe_orders';
+		$slugs    = array( 'asa-105', 'asa-107', 'asa-117', 'asa-119', 'asa-120' );
+
+		foreach ( $slugs as $slug ) {
+			$id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$products} WHERE slug = %s", $slug ) );
+			if ( $id <= 0 ) {
+				continue;
+			}
+			$used = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$orders} WHERE product_id = %d", $id ) );
+			if ( $used > 0 ) {
+				$wpdb->update( $products, array( 'active' => 0 ), array( 'id' => $id ), array( '%d' ), array( '%d' ) );
+				continue;
+			}
+			$wpdb->delete( $products, array( 'id' => $id ), array( '%d' ) );
+		}
+	}
+
+	public static function site_prefix(): string {
+		$name  = trim( (string) get_bloginfo( 'name' ) );
+		$words = preg_split( '/\s+/', $name ) ?: array();
+		$words = array_values(
+			array_filter(
+				$words,
+				static function ( $word ): bool {
+					return '' !== preg_replace( '/[^A-Za-z0-9]/', '', (string) $word );
+				}
+			)
+		);
+		if ( 1 === count( $words ) ) {
+			$token = strtoupper( (string) preg_replace( '/[^A-Za-z0-9]/', '', (string) $words[0] ) );
+			if ( strlen( $token ) >= 2 ) {
+				return substr( $token, 0, 6 );
+			}
+		}
+		$letters = '';
+		foreach ( $words as $word ) {
+			$word = (string) preg_replace( '/[^A-Za-z0-9]/', '', (string) $word );
+			if ( '' !== $word ) {
+				$letters .= strtoupper( $word[0] );
+			}
+		}
+		$letters = substr( $letters, 0, 6 );
+		return strlen( $letters ) >= 2 ? $letters : 'PAY';
+	}
+
+	public static function default_deposit( string $kind ): int {
+		$map = array(
+			'lesson'  => (int) get_option( 'mbss_stripe_deposit_lesson', 25000 ),
+			'package' => (int) get_option( 'mbss_stripe_deposit_package', 50000 ),
+			'docking' => (int) get_option( 'mbss_stripe_deposit_docking', 5000 ),
+			'passage' => (int) get_option( 'mbss_stripe_deposit_passage', 25000 ),
+		);
+		return max( 0, $map[ $kind ] ?? $map['lesson'] );
+	}
+
+	/**
+	 * Published in-person prices. Deposits follow the current course pages.
 	 * ASA 118 docking is the $50 exception. Existing rows are left unchanged.
+	 * Online courses are omitted because they are paid through another education system.
 	 *
 	 * @return array<int, array{slug:string,title:string,price:int,deposit:int,kind:string}>
 	 */
@@ -138,11 +207,6 @@ final class Installer {
 			array( 'slug' => 'hilton-head-2', 'title' => 'Hilton Head Passage — 2 guests', 'price' => 325000, 'deposit' => 50000, 'kind' => 'passage' ),
 			array( 'slug' => 'myrtle-beach-new-york-1', 'title' => 'Myrtle Beach to New York — 1 guest', 'price' => 320000, 'deposit' => 25000, 'kind' => 'passage' ),
 			array( 'slug' => 'myrtle-beach-new-york-2', 'title' => 'Myrtle Beach to New York — 2 guests', 'price' => 480000, 'deposit' => 50000, 'kind' => 'passage' ),
-			array( 'slug' => 'asa-105', 'title' => 'ASA 105 Coastal Navigation', 'price' => 41900, 'deposit' => 41900, 'kind' => 'online' ),
-			array( 'slug' => 'asa-107', 'title' => 'ASA 107 Celestial Navigation', 'price' => 41900, 'deposit' => 41900, 'kind' => 'online' ),
-			array( 'slug' => 'asa-117', 'title' => 'ASA 117 Basic Celestial Endorsement', 'price' => 41900, 'deposit' => 41900, 'kind' => 'online' ),
-			array( 'slug' => 'asa-119', 'title' => 'ASA 119 Marine Weather', 'price' => 41900, 'deposit' => 41900, 'kind' => 'online' ),
-			array( 'slug' => 'asa-120', 'title' => 'ASA 120 Radar Endorsement', 'price' => 41900, 'deposit' => 41900, 'kind' => 'online' ),
 		);
 	}
 }

@@ -47,6 +47,40 @@ final class Repository {
 		return is_array( $row ) ? $row : null;
 	}
 
+	public function insert_product( string $title, int $price_cents, int $deposit_cents, string $kind ): int {
+		global $wpdb;
+
+		$allowed = array( 'lesson', 'package', 'docking', 'passage', 'full' );
+		if ( ! in_array( $kind, $allowed, true ) ) {
+			$kind = 'lesson';
+		}
+
+		$base = sanitize_title( $title );
+		if ( '' === $base ) {
+			return 0;
+		}
+		$slug = $base;
+		$n    = 2;
+		while ( $this->product_by_slug( $slug ) ) {
+			$slug = $base . '-' . $n;
+			++$n;
+		}
+
+		$ok = $wpdb->insert(
+			$this->table( 'products' ),
+			array(
+				'slug'          => $slug,
+				'title'         => $title,
+				'price_cents'   => $price_cents,
+				'deposit_cents' => $deposit_cents,
+				'kind'          => $kind,
+				'active'        => 1,
+			),
+			array( '%s', '%s', '%d', '%d', '%s', '%d' )
+		);
+		return $ok ? (int) $wpdb->insert_id : 0;
+	}
+
 	public function save_product( int $id, int $price_cents, int $deposit_cents, int $active ): bool {
 		global $wpdb;
 		$updated = $wpdb->update(

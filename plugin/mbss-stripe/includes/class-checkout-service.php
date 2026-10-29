@@ -183,7 +183,7 @@ final class Checkout_Service {
 	 * @return array{ok:bool,error:string,charge_cents:int,price_cents:int,deposit_cents:int,balance_cents:int,balance_due:?string,pay_in_full:bool,lesson_date:?string}
 	 */
 	public function quote_for( array $product, ?string $lesson_date ): array {
-		$pay_in_full = 'online' === ( $product['kind'] ?? '' );
+		$pay_in_full = 'full' === ( $product['kind'] ?? '' );
 		$days        = (int) get_option( 'mbss_stripe_balance_days', 14 );
 		$days        = max( 1, min( 90, $days > 0 ? $days : 14 ) );
 		$quote       = Quote::build(
@@ -208,7 +208,7 @@ final class Checkout_Service {
 		if ( ! $this->stripe->is_configured() ) {
 			return array(
 				'ok'    => false,
-				'error' => 'Stripe is not connected yet. Add the secret key under MBSS Stripe before taking a payment.',
+				'error' => 'Stripe is not connected yet. Add the secret key under Course Deposits before taking a payment.',
 			);
 		}
 
@@ -253,7 +253,10 @@ final class Checkout_Service {
 			$label .= ' balance';
 		}
 
-		$description = 'Myrtle Beach Sailing School';
+		$description = (string) get_bloginfo( 'name' );
+		if ( '' === $description ) {
+			$description = 'Course payment';
+		}
 		if ( ! empty( $quote['balance_cents'] ) && 'balance' !== $kind ) {
 			$description = 'Balance of ' . Quote::dollars( (int) $quote['balance_cents'] );
 			if ( ! empty( $quote['balance_due'] ) ) {
@@ -332,7 +335,11 @@ final class Checkout_Service {
 	}
 
 	private function reference(): string {
-		return 'MBSS-' . strtoupper( bin2hex( random_bytes( 3 ) ) );
+		$prefix = strtoupper( (string) preg_replace( '/[^A-Za-z0-9]/', '', (string) get_option( 'mbss_stripe_ref_prefix', '' ) ) );
+		if ( '' === $prefix ) {
+			$prefix = 'PAY';
+		}
+		return substr( $prefix, 0, 6 ) . '-' . strtoupper( bin2hex( random_bytes( 3 ) ) );
 	}
 
 	public function return_base(): string {

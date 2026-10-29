@@ -42,13 +42,13 @@
 		}
 		var price = Number(option.getAttribute("data-price") || "0");
 		var deposit = Number(option.getAttribute("data-deposit") || "0");
-		var online = option.getAttribute("data-online") === "1";
+		var payInFull = option.getAttribute("data-full") === "1";
 		summary.hidden = false;
-		dateLabel.hidden = online;
-		date.required = !online;
-		if (online) {
+		dateLabel.hidden = payInFull;
+		date.required = !payInFull;
+		if (payInFull) {
 			due.textContent = "Stripe charges " + money(price) + " today.";
-			later.textContent = "This online course is paid in full.";
+			later.textContent = "This price is paid in full today.";
 			return;
 		}
 		var charge = Math.min(deposit, price);

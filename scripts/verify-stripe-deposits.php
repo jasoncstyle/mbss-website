@@ -68,6 +68,8 @@ check( 5000 === $by_slug['asa-118']['deposit'], 'catalog ASA 118 deposit is $50'
 check( 25000 === $by_slug['asa-101']['deposit'], 'catalog ASA 101 deposit is $250' );
 check( 50000 === $by_slug['asa-101-103']['deposit'], 'catalog liveaboard deposit is $500' );
 check( 25000 === $by_slug['asa-102-104']['deposit'], 'catalog 102+104 keeps the published $250 deposit' );
+check( ! isset( $by_slug['asa-105'] ), 'online education courses are not in the catalog' );
+check( ! isset( $by_slug['asa-120'] ), 'radar endorsement is not sold in this checkout' );
 
 $encoded = Checkout_Url::encode_success( 'https://example.com/pay/?mbss_stripe_session={CHECKOUT_SESSION_ID}' );
 check( str_contains( $encoded, '{CHECKOUT_SESSION_ID}' ), 'success url keeps the Stripe placeholder' );

@@ -36,7 +36,21 @@ final class Plugin {
 		if ( is_admin() ) {
 			( new Admin() )->register();
 		}
+		add_filter( 'plugin_row_meta', array( self::class, 'plugin_links' ), 10, 2 );
 		add_action( 'rest_api_init', array( self::class, 'register_webhook' ) );
+	}
+
+	/**
+	 * @param array<int, string> $links Existing plugin row links.
+	 * @return array<int, string>
+	 */
+	public static function plugin_links( array $links, string $file ): array {
+		if ( plugin_basename( MBSS_STRIPE_FILE ) !== $file ) {
+			return $links;
+		}
+		$links[] = '<a href="https://hundredairelabs.com" target="_blank" rel="noopener noreferrer">Hundredaire Labs</a>';
+		$links[] = '<a href="' . esc_url( admin_url( 'admin.php?page=mbss-stripe-details' ) ) . '">Details</a>';
+		return $links;
 	}
 
 	public static function register_webhook(): void {
