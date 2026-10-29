@@ -11,9 +11,6 @@ namespace MBSS;
 
 use MBSS\Admin\Admin_Menu;
 use MBSS\Api\Rest_Controller;
-use MBSS\Database\Catalog_Seeder;
-use MBSS\Database\Schema;
-use MBSS\Modules\Bookings\Booking_Service;
 use MBSS\Modules\Bookings\Booking_Shortcodes;
 
 final class Plugin {
@@ -29,26 +26,14 @@ final class Plugin {
 
 	public function init(): void {
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
-		add_action( 'init', array( $this, 'boot' ) );
-		add_action( 'mbss_expire_holds', array( $this, 'expire_holds' ) );
+		add_action( 'init', array( $this, 'register_shortcodes' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_assets' ) );
 
 		if ( is_admin() ) {
 			( new Admin_Menu() )->register();
 		}
 
 		( new Rest_Controller() )->register();
-	}
-
-	public function boot(): void {
-		$this->maybe_upgrade();
-		( new Booking_Shortcodes() )->register();
-		if ( ! wp_next_scheduled( 'mbss_expire_holds' ) ) {
-			wp_schedule_event( time() + HOUR_IN_SECONDS, 'hourly', 'mbss_expire_holds' );
-		}
-	}
-
-	public function expire_holds(): void {
-		( new Booking_Service() )->expire_holds();
 	}
 
 	public function load_textdomain(): void {
@@ -59,12 +44,16 @@ final class Plugin {
 		);
 	}
 
-	private function maybe_upgrade(): void {
-		if ( get_option( 'mbss_ops_db_version' ) === MBSS_OPS_VERSION ) {
-			return;
-		}
-		Schema::install();
-		Catalog_Seeder::seed();
-		Activator::ensure_pages();
+	public function register_shortcodes(): void {
+		( new Booking_Shortcodes() )->register();
+	}
+
+	public function enqueue_public_assets(): void {
+		wp_enqueue_style(
+			'mbss-public',
+			MBSS_OPS_URL . 'assets/css/admin.css',
+			array(),
+			MBSS_OPS_VERSION
+		);
 	}
 }
